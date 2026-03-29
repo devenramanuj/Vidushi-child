@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>વિદુષી - દેવેન્દ્રભાઈનું સર્જન</title>
+    <title>વિદુષી - સંવાદ</title>
     <style>
         :root {
             --primary: #6c5ce7;
-            --accent: #ff7675;
-            --bg: #f1f2f6;
+            --bg: #ffffff;
         }
 
         body {
@@ -19,149 +18,118 @@
             height: 100vh; overflow: hidden;
         }
 
-        /* વિડિયો સેક્શન */
-        .video-box {
-            flex: 1.2; position: relative;
-            background: #000; overflow: hidden;
-            border-bottom: 5px solid var(--primary);
+        /* વિડિયો સેક્શન - ઈમેજ મુજબ ફૂલ વિથ */
+        .video-container {
+            flex: 1.5; position: relative;
+            background: #000;
         }
 
         video { width: 100%; height: 100%; object-fit: cover; }
 
-        .v-label {
-            position: absolute; top: 15px; left: 15px;
-            background: rgba(108, 92, 231, 0.9);
-            color: white; padding: 5px 15px;
-            border-radius: 20px; font-size: 0.8rem;
+        /* માઇક બટન - વિડિયોની ધાર પર */
+        .mic-wrap {
+            position: absolute; bottom: -30px; left: 20px; z-index: 10;
         }
-
-        /* કોન્ટ્રોલ્સ */
-        .ui-box {
-            flex: 1; padding: 20px;
-            display: flex; flex-direction: column;
-            justify-content: space-around; align-items: center;
-        }
-
-        .math-card {
-            display: flex; align-items: center; gap: 15px;
-            background: white; padding: 25px;
-            border-radius: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        .digit { font-size: 3.5rem; font-weight: 900; color: var(--primary); }
-        .op-sign { font-size: 2.5rem; color: var(--accent); }
-
-        .mic-wrap { position: relative; margin-top: -50px; }
         
         .btn-mic {
-            width: 80px; height: 80px; background: var(--accent);
-            border: 6px solid white; border-radius: 50%;
-            color: white; font-size: 2rem; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(255, 118, 117, 0.4);
+            width: 60px; height: 60px; background: #ff7675;
+            border: 4px solid white; border-radius: 50%;
+            color: white; font-size: 1.5rem; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .listening { animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-
-        .btn-next {
-            background: var(--primary); color: white; border: none;
-            padding: 12px 35px; border-radius: 30px; font-weight: bold;
+        /* વાતો કરવાનું સ્ટેટસ */
+        .chat-container {
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 20px; background: white;
         }
+
+        #status-text {
+            color: #636e72; font-size: 1.1rem;
+            text-align: center; line-height: 1.6;
+            max-width: 80%;
+        }
+
+        .pulse { animation: ring 1.5s infinite; }
+        @keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(255,118,117,0.4); } 70% { box-shadow: 0 0 0 15px rgba(255,118,117,0); } 100% { box-shadow: 0 0 0 0 rgba(255,118,117,0); } }
     </style>
 </head>
-<body onclick="initApp()">
+<body onclick="startApp()">
 
-<div class="video-box">
-    <video id="vid" autoplay muted loop playsinline>
-        <source id="vsrc" src="silent.mp4" type="video/mp4">
+<div class="video-container">
+    <video id="v" autoplay muted loop playsinline>
+        <source id="vs" src="silent.mp4" type="video/mp4">
     </video>
-    <div class="v-label">વિદુષી AI</div>
-</div>
-
-<div class="mic-wrap">
-    <button class="btn-mic" id="mBtn" onclick="startMic()">🎤</button>
-</div>
-
-<div class="ui-box">
-    <div id="msg" style="color: #636e72; font-weight: bold; text-align: center;">સ્ક્રીન પર ગમે ત્યાં ક્લિક કરો</div>
-    
-    <div class="math-card">
-        <div class="digit" id="n1">?</div>
-        <div class="op-sign" id="op">+</div>
-        <div class="digit" id="n2">?</div>
+    <div class="mic-wrap">
+        <button class="btn-mic" id="mBtn" onclick="listen()">🎤</button>
     </div>
+</div>
 
-    <button class="btn-next" onclick="generate()">નવો સવાલ ➡️</button>
+<div class="chat-container">
+    <div id="status-text">સ્ક્રીન પર ક્લિક કરો...</div>
 </div>
 
 <script>
-    let correctAns, isStarted = false;
-    const vid = document.getElementById('vid');
-    const vsrc = document.getElementById('vsrc');
-    const msg = document.getElementById('msg');
+    let active = false;
+    const v = document.getElementById('v');
+    const vs = document.getElementById('vs');
+    const txt = document.getElementById('status-text');
 
     function setMood(m) {
-        if (!vsrc.src.includes(m)) {
-            vsrc.src = m + ".mp4";
-            vid.load(); vid.play();
+        if (!vs.src.includes(m)) {
+            vs.src = m + ".mp4";
+            v.load(); v.play();
         }
     }
 
-    // ચિન્હો વગર શુદ્ધ બોલવા માટેનું ફંક્શન
-    function cleanSpeak(text, cb) {
+    function speak(message) {
         setMood('speaking');
-        // ચિન્હો દૂર કરવા માટે Regex (ફક્ત અક્ષરો અને આંકડા રાખશે)
-        const cleanText = text.replace(/[^\u0A80-\u0AFFa-zA-Z0-9 ]/g, " ");
-        
-        const s = new SpeechSynthesisUtterance(cleanText);
+        const s = new SpeechSynthesisUtterance(message);
         s.lang = 'gu-IN';
-        s.rate = 0.9;
-        s.onend = () => { setMood('silent'); if(cb) cb(); };
+        s.onend = () => setMood('silent');
         window.speechSynthesis.speak(s);
     }
 
-    function initApp() {
-        if (isStarted) return;
-        isStarted = true;
-        msg.innerText = "વિદુષી સાંભળી રહી છે...";
-        // પ્રારંભિક વાક્ય
-        cleanSpeak("જય શ્રી કૃષ્ણ, હું વિદુષી છું, મને દેવેન્દ્રભાઈ એ બનાવી છે, આજે આપણે શેના વિશે વાત કરીશું?", generate);
+    function startApp() {
+        if (active) return;
+        active = true;
+        txt.innerText = "વિદુષી સાંભળી રહી છે...";
+        speak("જય શ્રી કૃષ્ણ, હું વિદુષી છું, મને દેવેન્દ્રભાઈ એ બનાવી છે, આજે આપણે શેના વિશે વાત કરીશું?");
     }
 
-    function generate() {
-        let a = Math.floor(Math.random() * 10) + 1;
-        let b = Math.floor(Math.random() * 10) + 1;
-        let op = Math.random() > 0.5 ? '+' : '-';
-        if (op === '-' && a < b) [a, b] = [b, a];
-
-        correctAns = op === '+' ? a + b : a - b;
-        document.getElementById('n1').innerText = a;
-        document.getElementById('n2').innerText = b;
-        document.getElementById('op').innerText = op === '+' ? '+' : '−';
-
-        let opTxt = op === '+' ? "વત્તા" : "ઓછા";
-        cleanSpeak(`${a} ${opTxt} ${b} કેટલા થાય?`);
-    }
-
-    function startMic() {
+    function listen() {
         const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!Rec) return;
+        
         const r = new Rec();
         r.lang = 'gu-IN';
-        r.onstart = () => { 
-            setMood('thinking'); 
-            document.getElementById('mBtn').classList.add('listening');
+        r.onstart = () => {
+            setMood('thinking');
+            document.getElementById('mBtn').classList.add('pulse');
+            txt.innerText = "હું સાંભળું છું...";
         };
+        
         r.onresult = (e) => {
-            document.getElementById('mBtn').classList.remove('listening');
-            let res = e.results[0][0].transcript;
-            if (res.includes(correctAns.toString())) {
-                setMood('smiling');
-                cleanSpeak("વાહ! સાચો જવાબ છે.");
+            document.getElementById('mBtn').classList.remove('pulse');
+            const userSpeech = e.results[0][0].transcript;
+            txt.innerText = "તમે કહ્યું: " + userSpeech;
+            
+            // અહીં તમે સાદા જવાબ સેટ કરી શકો
+            if(userSpeech.includes("કેમ છો")) {
+                speak("હું મજામાં છું, તમે કેમ છો?");
             } else {
-                cleanSpeak("ખોટું છે, ફરી પ્રયત્ન કરો.");
+                setMood('smiling');
+                speak("તમારી સાથે વાત કરીને ખૂબ આનંદ થયો.");
             }
         };
+        
+        r.onerror = () => {
+            document.getElementById('mBtn').classList.remove('pulse');
+            setMood('silent');
+            txt.innerText = "ફરીથી બોલો...";
+        };
+        
         r.start();
     }
 </script>
