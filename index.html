@@ -2,314 +2,168 @@
 <html lang="gu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>વિદુષી - પ્રીમિયમ ગણિત</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>વિદુષી - દેવેન્દ્રભાઈનું સર્જન</title>
     <style>
         :root {
             --primary: #6c5ce7;
-            --secondary: #a29bfe;
             --accent: #ff7675;
-            --bg: #f0f3f7;
-            --text: #2d3436;
+            --bg: #f1f2f6;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0; padding: 0;
             background-color: var(--bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: var(--text);
+            display: flex; flex-direction: column;
+            height: 100vh; overflow: hidden;
         }
 
-        .main-card {
-            background: white;
-            width: 90%;
-            max-width: 450px;
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(108, 92, 231, 0.15);
-            overflow: hidden;
-            position: relative;
-            padding-bottom: 30px;
-        }
-
-        /* વિડિયો કન્ટેનર */
+        /* વિડિયો સેક્શન */
         .video-box {
-            width: 100%;
-            height: 250px;
-            position: relative;
-            background: #000;
+            flex: 1.2; position: relative;
+            background: #000; overflow: hidden;
+            border-bottom: 5px solid var(--primary);
         }
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        video { width: 100%; height: 100%; object-fit: cover; }
+
+        .v-label {
+            position: absolute; top: 15px; left: 15px;
+            background: rgba(108, 92, 231, 0.9);
+            color: white; padding: 5px 15px;
+            border-radius: 20px; font-size: 0.8rem;
         }
 
-        .status-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(108, 92, 231, 0.8);
-            color: white;
-            text-align: center;
-            padding: 8px 0;
-            font-size: 0.9rem;
-            backdrop-filter: blur(5px);
+        /* કોન્ટ્રોલ્સ */
+        .ui-box {
+            flex: 1; padding: 20px;
+            display: flex; flex-direction: column;
+            justify-content: space-around; align-items: center;
         }
 
-        /* મુખ્ય કોન્ટેન્ટ */
-        .content {
-            padding: 25px;
-            text-align: center;
+        .math-card {
+            display: flex; align-items: center; gap: 15px;
+            background: white; padding: 25px;
+            border-radius: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
 
-        .v-text {
-            color: var(--primary);
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 25px;
+        .digit { font-size: 3.5rem; font-weight: 900; color: var(--primary); }
+        .op-sign { font-size: 2.5rem; color: var(--accent); }
+
+        .mic-wrap { position: relative; margin-top: -50px; }
+        
+        .btn-mic {
+            width: 80px; height: 80px; background: var(--accent);
+            border: 6px solid white; border-radius: 50%;
+            color: white; font-size: 2rem; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 118, 117, 0.4);
         }
 
-        /* Visual ગણિત ડિસ્પ્લે */
-        .math-display {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
+        .listening { animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        .number-card {
-            background: var(--bg);
-            color: var(--primary);
-            font-size: 3rem;
-            font-weight: 800;
-            padding: 15px 25px;
-            border-radius: 15px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-            min-width: 60px;
+        .btn-next {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 35px; border-radius: 30px; font-weight: bold;
         }
-
-        .operator {
-            font-size: 2.5rem;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        .equal-sign {
-            font-size: 2.5rem;
-            color: #b2bec3;
-        }
-
-        /* માઇક બટન */
-        .mic-container {
-            display: flex;
-            justify-content: center;
-            position: relative;
-            margin-top: -60px; /* વિડિયો પર ઓવરલેપ કરવા માટે */
-            z-index: 10;
-        }
-
-        .mic-btn {
-            background: white;
-            border: 8px solid var(--bg);
-            color: var(--accent);
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            font-size: 2rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 10px 20px rgba(255, 118, 117, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .mic-btn:active {
-            transform: scale(0.9);
-            box-shadow: 0 5px 10px rgba(255, 118, 117, 0.2);
-        }
-
-        .listening {
-            animation: pulse 1.5s infinite;
-            color: white;
-            background-color: var(--accent);
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 118, 117, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(255, 118, 117, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 118, 117, 0); }
-        }
-
-        /* નેક્સ્ટ બટન */
-        .next-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.2);
-        }
-
-        .next-btn:hover {
-            background: var(--secondary);
-        }
-
     </style>
 </head>
-<body>
+<body onclick="initApp()">
 
-<div class="main-card">
-    <div class="video-box">
-        <video id="vVid" autoplay muted loop>
-            <source id="vSrc" src="silent.mp4" type="video/mp4">
-        </video>
-        <div class="status-bar" id="vStatus">હું તૈયાર છું...</div>
+<div class="video-box">
+    <video id="vid" autoplay muted loop playsinline>
+        <source id="vsrc" src="silent.mp4" type="video/mp4">
+    </video>
+    <div class="v-label">વિદુષી AI</div>
+</div>
+
+<div class="mic-wrap">
+    <button class="btn-mic" id="mBtn" onclick="startMic()">🎤</button>
+</div>
+
+<div class="ui-box">
+    <div id="msg" style="color: #636e72; font-weight: bold; text-align: center;">સ્ક્રીન પર ગમે ત્યાં ક્લિક કરો</div>
+    
+    <div class="math-card">
+        <div class="digit" id="n1">?</div>
+        <div class="op-sign" id="op">+</div>
+        <div class="digit" id="n2">?</div>
     </div>
 
-    <div class="mic-container">
-        <button class="mic-btn" id="micBtn" onclick="startListening()">🎤</button>
-    </div>
-
-    <div class="content">
-        <div class="v-text">"હું વિદુષી છું, તમારી શી મદદ કરું?"</div>
-
-        <div class="math-display">
-            <div class="number-card" id="n1">?</div>
-            <div class="operator" id="op">+</div>
-            <div class="number-card" id="n2">?</div>
-            <div class="equal-sign">=</div>
-            <div class="number-card" style="color:var(--accent); background:#ffeaa7;">?</div>
-        </div>
-
-        <button class="next-btn" onclick="generateQuestion()">નવો સવાલ ➡️</button>
-    </div>
+    <button class="btn-next" onclick="generate()">નવો સવાલ ➡️</button>
 </div>
 
 <script>
-    let n1, n2, op, correctAns;
-    const vid = document.getElementById('vVid');
-    const src = document.getElementById('vSrc');
-    const status = document.getElementById('vStatus');
-    const micBtn = document.getElementById('micBtn');
+    let correctAns, isStarted = false;
+    const vid = document.getElementById('vid');
+    const vsrc = document.getElementById('vsrc');
+    const msg = document.getElementById('msg');
 
-    // ૧. પાત્રની સ્થિતિ બદલવી (Video Swapping)
-    function setMood(mood) {
-        const files = {
-            silent: 'silent.mp4',
-            speak: 'speaking.mp4',
-            think: 'thinking.mp4',
-            smile: 'smiling.mp4'
-        };
-        const target = files[mood] || files.silent;
-        if (!src.src.includes(target)) {
-            src.src = target;
-            vid.load();
-            vid.play();
+    function setMood(m) {
+        if (!vsrc.src.includes(m)) {
+            vsrc.src = m + ".mp4";
+            vid.load(); vid.play();
         }
     }
 
-    // ૨. વિદુષી બોલશે (Speaker)
-    function speakGu(text, onEndCallback) {
-        setMood('speak');
-        const speech = new SpeechSynthesisUtterance(text);
-        speech.lang = 'gu-IN';
-        speech.rate = 0.9; // થોડું ધીમે
-        speech.onend = () => {
-            setMood('silent');
-            if (onEndCallback) onEndCallback();
-        };
-        window.speechSynthesis.speak(speech);
+    // ચિન્હો વગર શુદ્ધ બોલવા માટેનું ફંક્શન
+    function cleanSpeak(text, cb) {
+        setMood('speaking');
+        // ચિન્હો દૂર કરવા માટે Regex (ફક્ત અક્ષરો અને આંકડા રાખશે)
+        const cleanText = text.replace(/[^\u0A80-\u0AFFa-zA-Z0-9 ]/g, " ");
+        
+        const s = new SpeechSynthesisUtterance(cleanText);
+        s.lang = 'gu-IN';
+        s.rate = 0.9;
+        s.onend = () => { setMood('silent'); if(cb) cb(); };
+        window.speechSynthesis.speak(s);
     }
 
-    // ૩. સવાલ બનાવવો (Visual)
-    function generateQuestion() {
-        n1 = Math.floor(Math.random() * 10) + 1;
-        n2 = Math.floor(Math.random() * 9) + 1;
-        op = Math.random() > 0.3 ? '+' : '-'; // સરવાળા વધુ આવશે
+    function initApp() {
+        if (isStarted) return;
+        isStarted = true;
+        msg.innerText = "વિદુષી સાંભળી રહી છે...";
+        // પ્રારંભિક વાક્ય
+        cleanSpeak("જય શ્રી કૃષ્ણ, હું વિદુષી છું, મને દેવેન્દ્રભાઈ એ બનાવી છે, આજે આપણે શેના વિશે વાત કરીશું?", generate);
+    }
 
-        if (op === '-' && n1 < n2) [n1, n2] = [n2, n1]; // બાદબાકીમાં જવાબ પ્લસમાં રાખવા
-        correctAns = op === '+' ? n1 + n2 : n1 - n2;
+    function generate() {
+        let a = Math.floor(Math.random() * 10) + 1;
+        let b = Math.floor(Math.random() * 10) + 1;
+        let op = Math.random() > 0.5 ? '+' : '-';
+        if (op === '-' && a < b) [a, b] = [b, a];
 
-        document.getElementById('n1').innerText = n1;
-        document.getElementById('n2').innerText = n2;
+        correctAns = op === '+' ? a + b : a - b;
+        document.getElementById('n1').innerText = a;
+        document.getElementById('n2').innerText = b;
         document.getElementById('op').innerText = op === '+' ? '+' : '−';
 
-        status.innerText = "આનો જવાબ બોલો...";
-        
-        // પૂછવાની પદ્ધતિ બદલી
-        let opText = op === '+' ? "વત્તા" : "ઓછા";
-        speakGu(`તમારે ${n1} ${opText} ${n2} નો જવાબ આપવાનો છે.`);
+        let opTxt = op === '+' ? "વત્તા" : "ઓછા";
+        cleanSpeak(`${a} ${opTxt} ${b} કેટલા થાય?`);
     }
 
-    // ૪. બાળકનો અવાજ સાંભળવો (Mic)
-    function startListening() {
-        if (!('webkitSpeechRecognition' in window)) {
-            alert("તમારું બ્રાઉઝર માઇક સપોર્ટ કરતું નથી.");
-            return;
-        }
-
-        const rec = new webkitSpeechRecognition();
-        rec.lang = 'gu-IN';
-        rec.continuous = false;
-
-        rec.onstart = () => {
-            setMood('think');
-            status.innerText = "સાંભળું છું... જવાબ બોલો";
-            micBtn.classList.add('listening');
+    function startMic() {
+        const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Rec) return;
+        const r = new Rec();
+        r.lang = 'gu-IN';
+        r.onstart = () => { 
+            setMood('thinking'); 
+            document.getElementById('mBtn').classList.add('listening');
         };
-
-        rec.onresult = (event) => {
-            micBtn.classList.remove('listening');
-            const result = event.results[0][0].transcript;
-            status.innerText = "તમે કહ્યું: " + result;
-            checkAnswer(result);
+        r.onresult = (e) => {
+            document.getElementById('mBtn').classList.remove('listening');
+            let res = e.results[0][0].transcript;
+            if (res.includes(correctAns.toString())) {
+                setMood('smiling');
+                cleanSpeak("વાહ! સાચો જવાબ છે.");
+            } else {
+                cleanSpeak("ખોટું છે, ફરી પ્રયત્ન કરો.");
+            }
         };
-
-        rec.onerror = () => {
-            micBtn.classList.remove('listening');
-            setMood('silent');
-            status.innerText = "અવાજ ન સમજાયો, ફરી પ્રયત્ન કરો.";
-        };
-
-        rec.start();
+        r.start();
     }
-
-    // ૫. જવાબ ચકાસવો
-    function checkAnswer(userVid) {
-        // ગુજરાતી કે અંગ્રેજી અંકોને નંબરમાં ફેરવવા
-        const cleanAns = userVid.replace(/[^0-9]/g, '');
-        
-        if (parseInt(cleanAns) === correctAns || userVid.includes(correctAns.toString())) {
-            setMood('smile');
-            speakGu("અરે વાહ! સાચો જવાબ છે.");
-        } else {
-            setMood('think');
-            speakGu("ના, ફરી વિચારો. સાચો જવાબ " + correctAns + " છે.", () => {
-                setMood('silent');
-            });
-        }
-    }
-
-    // શરૂઆત
-    window.onload = () => {
-        // શરૂઆતમાં વિદુષી સ્વાગત કરશે
-        speakGu("હું વિદુષી છું, તમારી શી મદદ કરું?", () => {
-            // સ્વાગત પછી પહેલો સવાલ આપોઆપ આવશે
-            setTimeout(generateQuestion, 1000);
-        });
-    };
 </script>
 
 </body>
