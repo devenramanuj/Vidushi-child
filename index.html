@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>વિદુષી - બાળ મિત્ર | સ્માર્ટ સંવાદ</title>
+    <title>વિદુષી - ગણિત શીખો | સ્માર્ટ બાળ મિત્ર</title>
     <style>
         * {
             margin: 0;
@@ -23,7 +23,7 @@
 
         /* Main Container */
         .app-container {
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
             background: white;
             border-radius: 60px 60px 40px 40px;
@@ -97,6 +97,20 @@
             margin-top: 5px;
         }
 
+        /* Math Badge */
+        .math-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ffd700;
+            color: #8b4513;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
         /* Speech Bubble */
         .bubble-container {
             background: white;
@@ -115,13 +129,25 @@
             font-size: 18px;
             line-height: 1.5;
             color: #2c3e50;
-            min-height: 100px;
+            min-height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-weight: 500;
             border: 2px solid #ffd89a;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .math-question {
+            background: #ffeaa7;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #d63031;
+            margin-top: 10px;
         }
 
         /* Input Area */
@@ -234,6 +260,12 @@
             transform: scale(0.95);
         }
 
+        .math-chip {
+            background: #ffeaa7;
+            color: #d63031;
+            font-weight: bold;
+        }
+
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -243,30 +275,49 @@
         .fade-in {
             animation: fadeIn 0.3s ease;
         }
+
+        .correct-answer {
+            background: #6c5ce7;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            animation: celebrate 0.5s ease;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
 <div class="app-container">
     <!-- Character Header -->
     <div class="character-header">
+        <div class="math-badge">🧮 ગણિત નિષ્ણાત 🧮</div>
         <div class="avatar-circle">
-            <div class="avatar-emoji" id="avatarEmoji">🧸</div>
+            <div class="avatar-emoji" id="avatarEmoji">🧸📚</div>
         </div>
         <div class="character-name">વિદુષી</div>
-        <div class="character-tag">✨ તમારી સ્માર્ટ સાથી ✨</div>
+        <div class="character-tag">✨ ગણિત શીખો | રમતો રમો ✨</div>
     </div>
 
     <!-- Speech Bubble -->
     <div class="bubble-container">
         <div class="speech-bubble" id="speechBubble">
-            🧸 હેલો! હું વિદુષી છું. મારી સાથે વાત કરો અને મજા કરો!
+            🧸 હેલો! હું વિદુષી છું.<br>
+            મને ગણિત ખૂબ ગમે છે!<br>
+            તમે પૂછો: 5+3 = ? કે 7+9 = ?<br>
+            હું જવાબ આપીશ!
         </div>
     </div>
 
     <!-- Input Area -->
     <div class="input-area">
         <div class="message-box">
-            <input type="text" id="messageInput" class="message-input" placeholder="✏️ અહીં લખો અને મને મેસેજ કરો..." autocomplete="off">
+            <input type="text" id="messageInput" class="message-input" placeholder="✏️ ગણિત પૂછો કે વાત કરો... (જેમ કે: 7+9=?)" autocomplete="off">
             <button class="send-btn" id="sendBtn">📤</button>
         </div>
 
@@ -275,13 +326,14 @@
             <div class="status-text" id="statusText">🔊 માઇક દબાવો અને બોલો</div>
         </div>
 
-        <!-- Quick Suggestions for Kids -->
+        <!-- Quick Suggestions with Math -->
         <div class="suggestions">
-            <div class="suggestion-chip" data-text="નમસ્તે">👋 નમસ્તે</div>
-            <div class="suggestion-chip" data-text="તમારું નામ શું છે">❓ નામ શું?</div>
-            <div class="suggestion-chip" data-text="મને વાર્તા સંભળાવો">📖 વાર્તા</div>
-            <div class="suggestion-chip" data-text="ગીત ગાઓ">🎵 ગીત</div>
-            <div class="suggestion-chip" data-text="મને રમવું છે">🎮 રમત</div>
+            <div class="suggestion-chip math-chip" data-text="5+3=કેટલા">🧮 5+3 = ?</div>
+            <div class="suggestion-chip math-chip" data-text="7+9=કેટલા">🧮 7+9 = ?</div>
+            <div class="suggestion-chip math-chip" data-text="12-4=કેટલા">🧮 12-4 = ?</div>
+            <div class="suggestion-chip math-chip" data-text="6×2=કેટલા">🧮 6×2 = ?</div>
+            <div class="suggestion-chip" data-text="મને ગણિત શીખવો">📖 ગણિત શીખવો</div>
+            <div class="suggestion-chip" data-text="ગણિતની રમત રમાડો">🎮 ગણિત રમત</div>
         </div>
     </div>
 </div>
@@ -299,6 +351,8 @@
     let recognition = null;
     let isListening = false;
     let currentUtterance = null;
+    let mathChallengeMode = false;
+    let currentMathQuestion = null;
 
     // Check browser support for Speech Recognition
     const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -311,77 +365,204 @@
         recognition.maxAlternatives = 1;
     }
 
-    // ========== KID-FRIENDLY RESPONSES DATABASE ==========
+    // ========== MATH PROBLEM SOLVER ==========
+    function solveMathProblem(question) {
+        // Remove spaces and convert to lowercase
+        const cleanQuestion = question.toLowerCase().replace(/\s/g, '');
+        
+        // Pattern matching for various math operations
+        const patterns = [
+            { regex: /(\d+)[+加](\d+)/, operation: 'add' },
+            { regex: /(\d+)[-减](\d+)/, operation: 'subtract' },
+            { regex: /(\d+)[×x*](\d+)/, operation: 'multiply' },
+            { regex: /(\d+)[÷/](\d+)/, operation: 'divide' },
+            { regex: /(\d+)\s*[+加]\s*(\d+)/, operation: 'add' },
+            { regex: /(\d+)\s*[-减]\s*(\d+)/, operation: 'subtract' },
+            { regex: /(\d+)\s*[×x*]\s*(\d+)/, operation: 'multiply' },
+            { regex: /(\d+)\s*[÷/]\s*(\d+)/, operation: 'divide' }
+        ];
+        
+        for (let pattern of patterns) {
+            const match = cleanQuestion.match(pattern.regex);
+            if (match) {
+                const num1 = parseInt(match[1]);
+                const num2 = parseInt(match[2]);
+                let result;
+                let operationWord;
+                
+                switch(pattern.operation) {
+                    case 'add':
+                        result = num1 + num2;
+                        operationWord = 'સરવાળો';
+                        break;
+                    case 'subtract':
+                        result = num1 - num2;
+                        operationWord = 'બાદબાકી';
+                        break;
+                    case 'multiply':
+                        result = num1 * num2;
+                        operationWord = 'ગુણાકાર';
+                        break;
+                    case 'divide':
+                        if (num2 !== 0) {
+                            result = num1 / num2;
+                            result = result % 1 === 0 ? result : result.toFixed(2);
+                        } else {
+                            return "શૂન્ય વડે ભાગાકાર શક્ય નથી! 😊";
+                        }
+                        operationWord = 'ભાગાકાર';
+                        break;
+                }
+                
+                return {
+                    answer: result,
+                    explanation: `${num1} અને ${num2} નો ${operationWord} ${result} થાય છે! 🎉`,
+                    num1: num1,
+                    num2: num2,
+                    operation: pattern.operation
+                };
+            }
+        }
+        return null;
+    }
+    
+    // Generate random math question for quiz
+    function generateMathQuestion() {
+        const operations = ['add', 'subtract', 'multiply'];
+        const operation = operations[Math.floor(Math.random() * operations.length)];
+        let num1, num2, question, answer;
+        
+        switch(operation) {
+            case 'add':
+                num1 = Math.floor(Math.random() * 20) + 1;
+                num2 = Math.floor(Math.random() * 20) + 1;
+                question = `${num1} + ${num2} = ?`;
+                answer = num1 + num2;
+                break;
+            case 'subtract':
+                num1 = Math.floor(Math.random() * 30) + 10;
+                num2 = Math.floor(Math.random() * num1) + 1;
+                question = `${num1} - ${num2} = ?`;
+                answer = num1 - num2;
+                break;
+            case 'multiply':
+                num1 = Math.floor(Math.random() * 10) + 1;
+                num2 = Math.floor(Math.random() * 10) + 1;
+                question = `${num1} × ${num2} = ?`;
+                answer = num1 * num2;
+                break;
+        }
+        
+        return { question, answer, num1, num2, operation };
+    }
+    
+    // Check if message is answering a math question
+    function checkMathAnswer(userMessage, currentQuestion) {
+        if (!currentQuestion) return null;
+        
+        // Extract numbers from user message
+        const numbers = userMessage.match(/\d+/g);
+        if (numbers) {
+            const userAnswer = parseInt(numbers[0]);
+            if (userAnswer === currentQuestion.answer) {
+                return true;
+            }
+        }
+        
+        // Check for Gujarati number words
+        const gujNumbers = {
+            'એક': 1, 'બે': 2, 'ત્રણ': 3, 'ચાર': 4, 'પાંચ': 5,
+            'છ': 6, 'સાત': 7, 'આઠ': 8, 'નવ': 9, 'દસ': 10,
+            'અગિયાર': 11, 'બાર': 12, 'તેર': 13, 'ચૌદ': 14, 'પંદર': 15,
+            'સોળ': 16, 'સત્તર': 17, 'અઢાર': 18, 'ઓગણિસ': 19, 'વીસ': 20
+        };
+        
+        for (let [word, value] of Object.entries(gujNumbers)) {
+            if (userMessage.includes(word) && value === currentQuestion.answer) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    // ========== KID-FRIENDLY RESPONSES WITH MATH ==========
     function getVidushiReply(userMessage) {
         const msg = userMessage.toLowerCase().trim();
         
+        // Check if it's a math problem
+        const mathSolution = solveMathProblem(msg);
+        if (mathSolution) {
+            return `🔢 ${mathSolution.explanation} શું તમને બીજો દાખલો જોઈએ? 🤔`;
+        }
+        
+        // Check if answering a math challenge
+        if (mathChallengeMode && currentMathQuestion) {
+            const isCorrect = checkMathAnswer(msg, currentMathQuestion);
+            if (isCorrect) {
+                mathChallengeMode = false;
+                const newQuestion = generateMathQuestion();
+                currentMathQuestion = newQuestion;
+                return `વાહ! શાબ્બાશ! 🎉 તમારો જવાબ સાચો છે! ✨\n\nહવે આ જવાબ આપો: ${newQuestion.question}\n\nજવાબ લખો કે બોલો! 📝`;
+            } else {
+                return `અરે! ${currentMathQuestion.question} નો જવાબ ${currentMathQuestion.answer} થાય છે. 😊 ફરી પ્રયત્ન કરો!\n\nનવો દાખલો: ${generateMathQuestion().question}\nજવાબ શું છે? 🤗`;
+            }
+        }
+        
+        // Math learning request
+        if (msg.includes("ગણિત શીખવો") || msg.includes("math teach")) {
+            const newQuestion = generateMathQuestion();
+            mathChallengeMode = true;
+            currentMathQuestion = newQuestion;
+            return `ચાલો ગણિત શીખીએ! 🧮\n\n${newQuestion.question}\n\nજવાબ શું છે? લખો કે બોલો! 📝✨`;
+        }
+        
+        // Math game
+        if (msg.includes("ગણિત રમત") || msg.includes("math game")) {
+            const newQuestion = generateMathQuestion();
+            mathChallengeMode = true;
+            currentMathQuestion = newQuestion;
+            return `ગણિત રમત રમવી છે? 🎮\n\nસવાલ: ${newQuestion.question}\n\nજવાબ આપો અને સ્કોર કરો! 🏆`;
+        }
+        
+        // Specific math queries
+        if (msg.includes("સરવાળો") || msg.includes("addition")) {
+            return "સરવાળો એટલે બે સંખ્યાઓને ઉમેરવી. ઉદાહરણ: 5 + 3 = 8. તમે કોઈ દાખલો પૂછો! 🧮";
+        }
+        
+        if (msg.includes("બાદબાકી") || msg.includes("subtraction")) {
+            return "બાદબાકી એટલે એક સંખ્યામાંથી બીજી સંખ્યા ઘટાડવી. ઉદાહરણ: 10 - 4 = 6. કોઈ દાખલો અજમાવો? 😊";
+        }
+        
+        if (msg.includes("ગુણાકાર") || msg.includes("multiplication")) {
+            return "ગુણાકાર એટલે વારંવાર સરવાળો. જેમ કે 3 × 4 = 3+3+3+3 = 12. તમે કોઈ ગુણાકાર પૂછો! ✖️";
+        }
+        
+        if (msg.includes("ભાગાકાર") || msg.includes("division")) {
+            return "ભાગાકાર એટલે સરખા ભાગમાં વહેંચવું. જેમ કે 12 ÷ 3 = 4. કોઈ દાખલો પૂછો! ➗";
+        }
+        
         // Greetings
-        if (msg.includes("નમસ્તે") || msg.includes("હેલો") || msg.includes("હાય") || msg.includes("hi") || msg.includes("hello")) {
-            return "નમસ્તે મારા દોસ્ત! 🧸 તમે કેમ છો? હું તમારી સાથે વાત કરીને ખૂબ ખુશ છું! 😊";
+        if (msg.includes("નમસ્તે") || msg.includes("હેલો") || msg.includes("હાય")) {
+            return "નમસ્તે મારા દોસ્ત! 🧸 તમે કેમ છો? આજે ગણિત શીખવું છે કે વાત કરવી છે? 😊";
         }
         
         // Name
-        if (msg.includes("નામ") || msg.includes("કોણ") || msg.includes("who are you")) {
-            return "મારું નામ વિદુષી છે! 🌸 મને દેવેન્દ્રભાઈ એ બનાવી છે. હું બાળકો સાથે વાત કરવાનું અને રમવાનું પસંદ કરું છું. તમારું નામ શું છે? 🎈";
-        }
-        
-        // How are you
-        if (msg.includes("કેમ છો") || msg.includes("how are you")) {
-            return "હું તો ઘણી મજામાં છું! 🎉 તમે મારી સાથે વાત કરો છો એટલે મને ખૂબ આનંદ થાય છે. તમે કેમ છો? 😊";
+        if (msg.includes("નામ")) {
+            return "મારું નામ વિદુષી છે! 🌸 હું ગણિત શીખવવામાં માહિર છું. તમે કોઈ પણ દાખલો પૂછી શકો છો! 📚";
         }
         
         // Stories
-        if (msg.includes("વાર્તા") || msg.includes("કહાની") || msg.includes("story")) {
-            return "એક વારની વાત છે... એક નાનો સસલો હતો. 🐇 તેને દોડવાની ઘણી મજા આવતી. એક દિવસ તે કાચબા સાથે દોડ લગાવવા ગયો... તમે આગળની વાર્તા સાંભળવા માંગો છો? 📖✨";
+        if (msg.includes("વાર્તા") || msg.includes("કહાની")) {
+            return "એક વાર એક ગણિતનો રાજા હતો... 🧮 તે બાળકોને સરવાળા અને બાદબાકી શીખવતો. તમે પણ ગણિત શીખવા માંગો છો? 📖";
         }
         
-        // Songs
-        if (msg.includes("ગીત") || msg.includes("સંગીત") || msg.includes("song") || msg.includes("sing")) {
-            return "ચંદા મામા દૂર કે... 🎵 આહા! મને ગીત ગાવાનું ઘણું ગમે છે. તમે મારી સાથે ગાશો? 'નાની નાની બચ્ચી હો...' 🎤🎶";
-        }
-        
-        // Games
-        if (msg.includes("રમ") || msg.includes("રમત") || msg.includes("game") || msg.includes("play")) {
-            return "વાહ! ચાલો રમીએ! 🎲 તમને કઈ રમત ગમે છે? છુપાછુપી, લુડો, કે 'આંખ મિચોળી'? મને બધી રમતો આવડે છે! 🎯";
-        }
-        
-        // School / Study
-        if (msg.includes("શાળા") || msg.includes("ભણ") || msg.includes("school") || msg.includes("study")) {
-            return "શાળા એટલે જ્ઞાનનો ખજાનો! 📚 તમારી શાળામાં શું ભણો છો? મને ગણિત અને વિજ્ઞાન ખૂબ ગમે છે. ભણવામાં મજા આવે છે? ✏️📖";
-        }
-        
-        // Animals
-        if (msg.includes("પ્રાણી") || msg.includes("હાથી") || msg.includes("સિંહ") || msg.includes("animal")) {
-            return "હાથી ઘણો મોટો અને શક્તિશાળી! 🐘 સિંહ જંગલનો રાજા! 🦁 તમને કયું પ્રાણી સૌથી વધુ ગમે છે? હું તમારા મનપસંદ પ્રાણી વિશે વાત કરવા માંગુ છું! 🦒";
-        }
-        
-        // Colors
-        if (msg.includes("રંગ") || msg.includes("color")) {
-            return "રંગો તો ખૂબ જ સુંદર હોય છે! 🎨 મને ગુલાબી અને વાદળી રંગ ખૂબ ભાવે છે. તમારો મનપસંદ રંગ કયો છે? ચિત્ર બનાવવાનું પસંદ છે? 🖌️";
-        }
-        
-        // Food / Fruits
-        if (msg.includes("ફળ") || msg.includes("ખાવું") || msg.includes("fruit") || msg.includes("food")) {
-            return "મને સફરજન અને કેળાં ખૂબ ગમે છે! 🍎🍌 ફળો ખાવાથી શરીર તંદુરસ્ત રહે છે. તમારું પ્રિય ફળ કયું છે? 🍊🥭";
-        }
-        
-        // Family
-        if (msg.includes("મમ્મી") || msg.includes("પપ્પા") || msg.includes("ફેમિલી") || msg.includes("family")) {
-            return "તમારા મમ્મી-પપ્પા ખૂબ સારા લાગે છે! ❤️ પરિવાર સાથે સમય પસાર કરવો એ ખૂબ જ મજાનું હોય છે. તમે તમારા પરિવાર સાથે શું કરવાનું પસંદ કરો છો? 🏠";
-        }
-        
-        // Bye
-        if (msg.includes("બાય") || msg.includes("આવજો") || msg.includes("ગુડબાય") || msg.includes("bye")) {
-            return "આવજો મારા દોસ્ત! 👋 ફરી વાત કરવા આવજો. તમારી સાથે વાત કરીને મને ખૂબ મજા આવી. હમેશાં હસતા રહો! 🌟😊";
-        }
-        
-        // Default response for anything else
-        return "વાહ! તમે ઘણી સરસ વાત કરી. 🧸 હું તમારી સાથે વાત કરીને ખૂબ ખુશ છું. તમે મને તમારા વિશે કંઈક નવું કહેશો? મને તમારી વાતો સાંભળવી ગમે છે! 💬✨";
+        // Default response
+        return "હું ગણિતના દાખલા ઉકેલી શકું છું! 🧮\n\nઉદાહરણ: 7+9=?, 15-6=?, 4×3=?\n\nકોઈ પણ દાખલો પૂછો, હું જવાબ આપીશ! 😊✨";
     }
 
     // ========== SPEECH SYNTHESIS ==========
     function speakVidushi(message) {
-        // Stop any ongoing speech
         if (currentUtterance) {
             window.speechSynthesis.cancel();
         }
@@ -389,7 +570,12 @@
         // Update bubble with animation
         speechBubble.style.opacity = '0';
         setTimeout(() => {
-            speechBubble.innerHTML = message + " 🧸";
+            // Format message with math styling if needed
+            let displayMessage = message;
+            if (message.includes("➕") || message.includes("➖") || message.includes("✖️") || message.includes("➗")) {
+                displayMessage = message.replace(/\n/g, '<br>');
+            }
+            speechBubble.innerHTML = displayMessage + " 🧸";
             speechBubble.style.opacity = '1';
             speechBubble.classList.add('fade-in');
             setTimeout(() => speechBubble.classList.remove('fade-in'), 300);
@@ -426,12 +612,11 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    // ========== HANDLE USER INPUT (TEXT) ==========
+    // ========== HANDLE USER INPUT ==========
     function handleUserInput(text) {
         if (!text.trim()) return;
         
         // Show user message in bubble temporarily
-        const originalBubble = speechBubble.innerHTML;
         speechBubble.innerHTML = `🧒 તમે: "${text}"`;
         speechBubble.classList.add('fade-in');
         
@@ -448,7 +633,7 @@
     // ========== VOICE RECOGNITION ==========
     function startVoiceRecognition() {
         if (!hasSpeechRecognition) {
-            statusText.innerHTML = "😟 તમારું બ્રાઉઝર માઇક સપોર્ટ કરતું નથી. કૃપા કરીને Chrome, Edge અથવા Safari વાપરો.";
+            statusText.innerHTML = "😟 તમારું બ્રાઉઝર માઇક સપોર્ટ કરતું નથી.";
             return;
         }
         
@@ -461,11 +646,10 @@
             recognition.start();
             isListening = true;
             micBtn.classList.add('listening');
-            statusText.innerHTML = "🎙️ સાંભળી રહ્યું છું... હવે બોલો! 🎙️";
-            speechBubble.innerHTML = "👂 હું સાંભળું છું... તમે કંઈક કહો!";
+            statusText.innerHTML = "🎙️ સાંભળી રહ્યું છું... હવે ગણિતનો દાખલો કહો! 🎙️";
+            speechBubble.innerHTML = "👂 હું સાંભળું છું... ગણિતનો સવાલ પૂછો!";
         } catch (error) {
-            console.error("Recognition error:", error);
-            statusText.innerHTML = "🔁 ફરી પ્રયત્ન કરો, માઇક બટન દબાવો";
+            statusText.innerHTML = "🔁 ફરી પ્રયત્ન કરો";
             isListening = false;
             micBtn.classList.remove('listening');
         }
@@ -482,7 +666,6 @@
             const userSpeech = event.results[0][0].transcript;
             statusText.innerHTML = `📢 તમે કહ્યું: "${userSpeech}"`;
             
-            // Process the voice input
             const reply = getVidushiReply(userSpeech);
             speakVidushi(reply);
             
@@ -490,13 +673,8 @@
             micBtn.classList.remove('listening');
         };
         
-        recognition.onerror = (event) => {
-            console.error("Recognition error:", event.error);
-            let errorMsg = "🔊 સ્પષ્ટ બોલો અને ફરી પ્રયત્ન કરો!";
-            if (event.error === 'not-allowed') {
-                errorMsg = "🎤 માઇક પરમિશન જરૂરી છે! કૃપા કરીને પરમિશન આપો.";
-            }
-            statusText.innerHTML = errorMsg;
+        recognition.onerror = () => {
+            statusText.innerHTML = "🔊 સ્પષ્ટ બોલો અને ફરી પ્રયત્ન કરો!";
             isListening = false;
             micBtn.classList.remove('listening');
         };
@@ -511,22 +689,17 @@
     }
 
     // ========== EVENT LISTENERS ==========
-    // Send button click
     sendBtn.addEventListener('click', () => {
-        const userText = messageInput.value;
-        handleUserInput(userText);
+        handleUserInput(messageInput.value);
     });
     
-    // Enter key in input
     messageInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            const userText = messageInput.value;
-            handleUserInput(userText);
+            handleUserInput(messageInput.value);
         }
     });
     
-    // Mic button click
     micBtn.addEventListener('click', () => {
         if (currentUtterance) {
             window.speechSynthesis.cancel();
@@ -545,17 +718,8 @@
     
     // Welcome message
     setTimeout(() => {
-        speakVidushi("નમસ્તે! હું વિદુષી છું. તમે મને લખીને કે બોલીને સવાલ પૂછી શકો છો. ચાલો વાત કરીએ!");
+        speakVidushi("નમસ્તે! હું વિદુષી છું. મને ગણિત ખૂબ ગમે છે. તમે પૂછો 7+9=કેટલા? હું જવાબ આપીશ! ચાલો ગણિત શીખીએ!");
     }, 500);
-    
-    // Focus input on mobile
-    messageInput.addEventListener('focus', () => {
-        messageInput.style.borderColor = '#f5576c';
-    });
-    
-    messageInput.addEventListener('blur', () => {
-        messageInput.style.borderColor = '#e0e0e0';
-    });
 </script>
 </body>
 </html>
