@@ -3,136 +3,548 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>વિદુષી - સંવાદ</title>
+    <title>વિદુષી - બાળ મિત્ર | સ્માર્ટ સંવાદ</title>
     <style>
-        :root {
-            --primary: #6c5ce7;
-            --bg: #ffffff;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* prevents accidental text selection, keeps kid-friendly feel */
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            margin: 0; padding: 0;
-            background-color: var(--bg);
-            display: flex; flex-direction: column;
-            height: 100vh; overflow: hidden;
+            font-family: 'Comic Neue', 'Comic Neue', 'Segoe UI', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            background: linear-gradient(145deg, #f9e7b3 0%, #f5cda0 100%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        /* વિડિયો સેક્શન - ઈમેજ મુજબ ફૂલ વિથ */
-        .video-container {
-            flex: 1.5; position: relative;
-            background: #000;
+        /* playful floating shapes background */
+        body::before {
+            content: "🌟⭐🎈🍎📚";
+            position: absolute;
+            font-size: 70px;
+            bottom: 10px;
+            right: 10px;
+            opacity: 0.1;
+            pointer-events: none;
+            white-space: pre;
+            z-index: 0;
         }
 
-        video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* માઇક બટન - વિડિયોની ધાર પર */
-        .mic-wrap {
-            position: absolute; bottom: -30px; left: 20px; z-index: 10;
+        body::after {
+            content: "🐘🐒🐢🦜";
+            position: absolute;
+            font-size: 80px;
+            top: 20px;
+            left: 0px;
+            opacity: 0.08;
+            pointer-events: none;
+            transform: rotate(-5deg);
+            z-index: 0;
         }
+
+        /* main character area */
+        .character-stage {
+            flex: 1.4;
+            background: radial-gradient(circle at 30% 20%, #ffefc0, #ffd89a);
+            margin: 12px 16px 8px 16px;
+            border-radius: 72px 72px 56px 56px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2), inset 0 1px 4px rgba(255,255,200,0.8);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 4px solid white;
+        }
+
+        /* animated avatar */
+        .avatar-box {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-5px);
+        }
+
+        .vidushi-face {
+            width: 180px;
+            height: 180px;
+            background: #fdd998;
+            border-radius: 50%;
+            box-shadow: 0 15px 0 #c29b4a, 0 8px 20px rgba(0,0,0,0.2);
+            position: relative;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* eyes + blushes */
+        .eyes {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        .eye {
+            width: 28px;
+            height: 32px;
+            background: #3e2a1f;
+            border-radius: 50%;
+            transition: all 0.1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .eye::after {
+            content: "⚪";
+            position: absolute;
+            font-size: 18px;
+            top: 4px;
+            left: 4px;
+            opacity: 0.9;
+        }
+        .mouth {
+            width: 50px;
+            height: 28px;
+            background: #b1542c;
+            border-radius: 0 0 40px 40px;
+            margin-top: 18px;
+            transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .blush {
+            position: absolute;
+            width: 28px;
+            height: 18px;
+            background: #ffaaaa;
+            border-radius: 50%;
+            bottom: 35px;
+            opacity: 0.6;
+        }
+        .blush-left { left: 35px; }
+        .blush-right { right: 35px; }
+
+        /* emotion animations */
+        .happy .mouth { transform: scaleX(1.1); background: #d46b3a; border-radius: 40px 40px 20px 20px; height: 24px; }
+        .thinking .eye { animation: blink 2s infinite; }
+        .thinking .mouth { width: 40px; height: 16px; background: #9b4a2a; border-radius: 20px; }
+        .speaking .mouth { animation: talk 0.2s infinite alternate; }
+        .listening .eye { animation: blinkFast 0.8s infinite; }
         
-        .btn-mic {
-            width: 60px; height: 60px; background: #ff7675;
-            border: 4px solid white; border-radius: 50%;
-            color: white; font-size: 1.5rem; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        @keyframes talk {
+            0% { height: 14px; transform: scaleY(0.6); }
+            100% { height: 30px; transform: scaleY(1); }
+        }
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1);}
+            95% { transform: scaleY(0.1);}
+        }
+        @keyframes blinkFast {
+            0%, 100% { transform: scaleY(1);}
+            50% { transform: scaleY(0.1);}
         }
 
-        /* વાતો કરવાનું સ્ટેટસ */
-        .chat-container {
-            flex: 1; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            padding: 20px; background: white;
+        /* speech bubble */
+        .speech-bubble {
+            background: white;
+            padding: 14px 22px;
+            border-radius: 48px;
+            border-top-left-radius: 12px;
+            max-width: 260px;
+            margin-top: 24px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4a2a1a;
+            box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            backdrop-filter: blur(2px);
+            background: rgba(255,255,245,0.95);
+            text-align: center;
+            font-family: 'Comic Neue', monospace;
         }
 
-        #status-text {
-            color: #636e72; font-size: 1.1rem;
-            text-align: center; line-height: 1.6;
-            max-width: 80%;
+        /* mic + controls area */
+        .interaction-panel {
+            background: #fff5e6;
+            margin: 8px 20px 20px 20px;
+            border-radius: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #ffcf9a;
+            z-index: 2;
         }
 
-        .pulse { animation: ring 1.5s infinite; }
-        @keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(255,118,117,0.4); } 70% { box-shadow: 0 0 0 15px rgba(255,118,117,0); } 100% { box-shadow: 0 0 0 0 rgba(255,118,117,0); } }
+        .mic-button {
+            width: 80px;
+            height: 80px;
+            background: #ffb347;
+            background: linear-gradient(145deg, #ffaa44, #ff8822);
+            border: none;
+            border-radius: 50%;
+            font-size: 2.8rem;
+            cursor: pointer;
+            box-shadow: 0 10px 0 #b45f1b;
+            transition: 0.07s linear;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mic-button:active {
+            transform: translateY(5px);
+            box-shadow: 0 5px 0 #b45f1b;
+        }
+
+        .status-msg {
+            background: #f0e0c5;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #7b3f00;
+            flex: 1;
+            margin: 0 15px;
+            text-align: center;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            box-shadow: inset 0 0 6px #e7c69e, 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .pulse-effect {
+            animation: micPulse 0.9s infinite;
+        }
+
+        @keyframes micPulse {
+            0% { box-shadow: 0 0 0 0 #ffaa55, 0 10px 0 #b45f1b; }
+            70% { box-shadow: 0 0 0 12px rgba(255,170,85,0.4), 0 10px 0 #b45f1b; }
+            100% { box-shadow: 0 0 0 0 rgba(255,170,85,0), 0 10px 0 #b45f1b; }
+        }
+
+        /* friendly tap hint */
+        .tap-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 18px;
+            background: #fbe4b0;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #a55217;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.7;
+        }
+
+        /* responsiveness */
+        @media (max-width: 550px) {
+            .vidushi-face { width: 140px; height: 140px; }
+            .eye { width: 20px; height: 24px; }
+            .speech-bubble { font-size: 1rem; max-width: 200px; padding: 10px 16px; }
+            .mic-button { width: 65px; height: 65px; font-size: 2.2rem; }
+        }
+
+        button {
+            background: none;
+            border: none;
+        }
     </style>
 </head>
-<body onclick="startApp()">
+<body>
 
-<div class="video-container">
-    <video id="v" autoplay muted loop playsinline>
-        <source id="vs" src="silent.mp4" type="video/mp4">
-    </video>
-    <div class="mic-wrap">
-        <button class="btn-mic" id="mBtn" onclick="listen()">🎤</button>
+<div class="character-stage">
+    <div class="avatar-box" id="avatarBox">
+        <div class="vidushi-face" id="vidushiFace">
+            <div class="blush blush-left"></div>
+            <div class="blush blush-right"></div>
+            <div class="eyes">
+                <div class="eye" id="leftEye"></div>
+                <div class="eye" id="rightEye"></div>
+            </div>
+            <div class="mouth" id="mouthAnim"></div>
+        </div>
+        <div class="speech-bubble" id="bubbleText">
+            🧸 હેલો! મારું નામ વિદુષી!
+        </div>
     </div>
 </div>
 
-<div class="chat-container">
-    <div id="status-text">સ્ક્રીન પર ક્લિક કરો...</div>
+<div class="interaction-panel">
+    <button class="mic-button" id="magicMicBtn" aria-label="માઇક બટન">🎙️</button>
+    <div class="status-msg" id="kidStatusMsg">✨ મને દબાવો અને વાત કરો ✨</div>
+    <div style="font-size: 1.7rem;">🧸</div>
 </div>
+<div class="tap-hint">⭐ બોલવા માટે ગોળ બટન દબાવો ⭐</div>
 
 <script>
-    let active = false;
-    const v = document.getElementById('v');
-    const vs = document.getElementById('vs');
-    const txt = document.getElementById('status-text');
-
-    function setMood(m) {
-        if (!vs.src.includes(m)) {
-            vs.src = m + ".mp4";
-            v.load(); v.play();
+    // -------------------  KID-FRIENDLY AI CONVERSATION --------------------
+    // DOM elements
+    const vidushiFace = document.getElementById('vidushiFace');
+    const leftEye = document.getElementById('leftEye');
+    const rightEye = document.getElementById('rightEye');
+    const mouthElem = document.getElementById('mouthAnim');
+    const bubbleDiv = document.getElementById('bubbleText');
+    const statusDiv = document.getElementById('kidStatusMsg');
+    const micBtn = document.getElementById('magicMicBtn');
+    
+    // Helper to set emotion (face and mood class)
+    function setEmotion(emotion) {
+        // reset all classes
+        vidushiFace.classList.remove('happy', 'thinking', 'speaking', 'listening');
+        if (emotion === 'happy') {
+            vidushiFace.classList.add('happy');
+            mouthElem.style.transform = "scale(1)";
+        } else if (emotion === 'thinking') {
+            vidushiFace.classList.add('thinking');
+        } else if (emotion === 'speaking') {
+            vidushiFace.classList.add('speaking');
+        } else if (emotion === 'listening') {
+            vidushiFace.classList.add('listening');
+        } else { // silent / idle
+            mouthElem.style.height = "28px";
+            mouthElem.style.background = "#b1542c";
+            mouthElem.style.borderRadius = "0 0 40px 40px";
+            vidushiFace.classList.remove('happy','thinking','speaking','listening');
+        }
+        // special eye twinkle for happy
+        if (emotion === 'happy') {
+            leftEye.style.animation = "blink 3s infinite";
+            rightEye.style.animation = "blink 3s infinite";
+        } else if (emotion === 'listening') {
+            leftEye.style.animation = "blinkFast 0.9s infinite";
+            rightEye.style.animation = "blinkFast 0.9s infinite";
+        } else {
+            leftEye.style.animation = "";
+            rightEye.style.animation = "";
         }
     }
 
-    function speak(message) {
-        setMood('speaking');
-        const s = new SpeechSynthesisUtterance(message);
-        s.lang = 'gu-IN';
-        s.onend = () => setMood('silent');
-        window.speechSynthesis.speak(s);
-    }
-
-    function startApp() {
-        if (active) return;
-        active = true;
-        txt.innerText = "વિદુષી સાંભળી રહી છે...";
-        speak("જય શ્રી કૃષ્ણ, હું વિદુષી છું, મને દેવેન્દ્રભાઈ એ બનાવી છે, આજે આપણે શેના વિશે વાત કરીશું?");
-    }
-
-    function listen() {
-        const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!Rec) return;
+    // speak function with Gujarati TTS + emotion
+    let currentUtterance = null;
+    function speakVidushi(message, emotionAfter = 'happy') {
+        if (currentUtterance) {
+            window.speechSynthesis.cancel();
+        }
+        // update bubble & status
+        bubbleDiv.innerText = message;
+        statusDiv.innerText = "🗣️ વિદુષી બોલે છે...";
+        setEmotion('speaking');
         
-        const r = new Rec();
-        r.lang = 'gu-IN';
-        r.onstart = () => {
-            setMood('thinking');
-            document.getElementById('mBtn').classList.add('pulse');
-            txt.innerText = "હું સાંભળું છું...";
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.lang = 'gu-IN';
+        utterance.rate = 0.9;
+        utterance.pitch = 1.2;
+        utterance.onend = () => {
+            setEmotion(emotionAfter);
+            if (emotionAfter === 'happy') {
+                // keep smile a bit longer
+                bubbleDiv.innerText = "😊 હું સાંભળી રહી છું! તમે બોલો...";
+                statusDiv.innerText = "🎧 તમારો વારો! માઇક દબાવો 🎧";
+            } else {
+                statusDiv.innerText = "💬 બોલવા માટે ફરીથી માઇક દબાવો 💬";
+            }
+        };
+        utterance.onerror = () => {
+            setEmotion('happy');
+            statusDiv.innerText = "🥺 ઓહ! ફરી પ્રયત્ન કરો";
+        };
+        window.speechSynthesis.speak(utterance);
+        currentUtterance = utterance;
+    }
+
+    // ---------- CHILD FRIENDLY RESPONSES (based on keywords) ----------
+    function getKidFriendlyReply(userText) {
+        const text = userText.toLowerCase();
+        // gujarati + english mixed but kid-friendly understanding
+        if (text.includes("નમસ્તે") || text.includes("હેલો") || text.includes("હાય") || text.includes("hello") || text.includes("hi")) {
+            return "નમસ્તે મિત્ર! તમે કેમ છો? મારી સાથે રમવા મજા આવશે! 🎈";
+        }
+        if (text.includes("તમારું નામ") || text.includes("નામ શું") || text.includes("what's your name")) {
+            return "મારું નામ વિદુષી છે! મને દેવેન્દ્રભાઈએ બનાવી છે. હું બાળકો સાથે વાત કરવાનું પસંદ કરું છું! 🧸✨";
+        }
+        if (text.includes("કેમ છો") || text.includes("કેમ છ") || text.includes("how are you")) {
+            return "હું તો ઘણી મસ્તીમાં છું! તમે મારી સાથે વાત કરો છો એટલે મને ખૂબ આનંદ થાય છે. તમે કેમ છો? 😊";
+        }
+        if (text.includes("રમવું") || text.includes("રમીએ") || text.includes("game") || text.includes("ગેમ")) {
+            return "વાહ! મને રમવું ગમે છે. ચાલો 'આંખ મિચોળી' કે 'શેરડી શેરડી' રમીએ? પહેલા મને કહો કઈ રમત રમશું? 🎲🪁";
+        }
+        if (text.includes("વાર્તા") || text.includes("story") || text.includes("કહાની")) {
+            return "એક વાર એક નાનો સસલો હતો... તેને મિત્રો સાથે મળીને ખૂબ મજા આવતી. તમને પણ વાર્તા ગમે છે? હું બીજી સુંદર વાર્તા કહું? 📖🐇";
+        }
+        if (text.includes("ગીત") || text.includes("સંગીત") || text.includes("song") || text.includes("sing")) {
+            return "ચંદા મામા દૂર કે... આહા! તમને ગીત ગાવાનું પસંદ છે? ચાલો સાથે ગાઈએ! 🎵🎤";
+        }
+        if (text.includes("શાળા") || text.includes("school") || text.includes("ભણવું")) {
+            return "શાળા એટલે જ્ઞાનની મજા! તમારી શાળામાં શું શીખવો છો? મને પણ ગણિત અને વિજ્ઞાન ખૂબ ગમે છે. 📚✏️";
+        }
+        if (text.includes("મમ્મી") || text.includes("પપ્પા") || text.includes("ફેમિલી") || text.includes("family")) {
+            return "તમારા મમ્મી-પપ્પા ખૂબ સારા લાગે છે! તમે તેમની સાથે સમય પસાર કરો છો? પરિવાર એ ખરો ખજાનો છે! ❤️🏠";
+        }
+        if (text.includes("રંગ") || text.includes("color") || text.includes("લાલ") || text.includes("પીળો")) {
+            return "મને વાદળી અને ગુલાબી રંગ ખૂબ ભાવે છે! તમારો મનપસંદ રંગ કયો છે? ચિત્રકળા કરવી ગમે? 🎨🖌️";
+        }
+        if (text.includes("પ્રાણી") || text.includes("animal") || text.includes("હાથી") || text.includes("સિંહ")) {
+            return "હાથી તો ઘણો મોટો અને ભારે, પણ મિત્રસરખો! સિંહ જંગલનો રાજા. તમને કયું પ્રાણી સૌથી વધુ ગમે? 🐘🦁🐒";
+        }
+        if (text.includes("ફળ") || text.includes("fruit") || text.includes("સફરજન") || text.includes("કેળું")) {
+            return "સફરજન તો સેવ છે, કેળું તો મીઠું! ફળ ખાવાથી શરીર તંદુરસ્ત રહે છે. તમારું પ્રિય ફળ કયું છે? 🍎🍌🍊";
+        }
+        if (text.includes("આભાર") || text.includes("થેંક્સ") || text.includes("thank")) {
+            return "આભાર! તમે ખૂબ સારા છો. હમેશાં હસતા રહો! 🌟";
+        }
+        if (text.includes("બાય") || text.includes("ગુડબાય") || text.includes("ફરી મળીશું")) {
+            return "આવજો મારા દોસ્ત! ફરી વાત કરવા આવજો. તમારી સાથે વાત કરીને મજા આવી. 🥰👋";
+        }
+        // default playful reply
+        return "વાહ, તમે ઘણી સરસ વાત કરી! હું તમારી સાથે વાત કરીને ખુશ થઈ ગઈ. તમે મને તમારી મનપસંદ વસ્તુ વિશે કહો? 😇💬";
+    }
+    
+    // function to handle user speech (Voice Recognition)
+    let recognition = null;
+    let isListening = false;
+    
+    function startListening() {
+        if (isListening) return;
+        // check browser support
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognitionAPI) {
+            statusDiv.innerText = "😟 તમારું બ્રાઉઝર માઇક સપોર્ટ કરતું નથી! ક્રોમ/એજ્જ અજમાવો.";
+            bubbleDiv.innerText = "ઓહ! માઇક કામ નથી કરતું 😢";
+            return;
+        }
+        
+        recognition = new SpeechRecognitionAPI();
+        recognition.lang = 'gu-IN';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onstart = () => {
+            isListening = true;
+            setEmotion('listening');
+            statusDiv.innerText = "🎤 સાંભળી રહી છું... બોલો બોલો! 🎤";
+            bubbleDiv.innerText = "👂 હું સાંભળું છું... તમે કંઇક કહો!";
+            micBtn.classList.add('pulse-effect');
         };
         
-        r.onresult = (e) => {
-            document.getElementById('mBtn').classList.remove('pulse');
-            const userSpeech = e.results[0][0].transcript;
-            txt.innerText = "તમે કહ્યું: " + userSpeech;
-            
-            // અહીં તમે સાદા જવાબ સેટ કરી શકો
-            if(userSpeech.includes("કેમ છો")) {
-                speak("હું મજામાં છું, તમે કેમ છો?");
-            } else {
-                setMood('smiling');
-                speak("તમારી સાથે વાત કરીને ખૂબ આનંદ થયો.");
+        recognition.onresult = (event) => {
+            const userSpeech = event.results[0][0].transcript;
+            statusDiv.innerText = `📢 તમે કહ્યું: "${userSpeech}"`;
+            bubbleDiv.innerText = `🧒: "${userSpeech}"`;
+            // generate kid-friendly AI reply
+            const reply = getKidFriendlyReply(userSpeech);
+            // make emotion happy before speaking
+            setEmotion('happy');
+            // show reply in bubble then speak
+            bubbleDiv.innerText = reply;
+            speakVidushi(reply, 'happy');
+            // stop listening flag & remove pulse
+            if (recognition) recognition.stop();
+            isListening = false;
+            micBtn.classList.remove('pulse-effect');
+        };
+        
+        recognition.onerror = (err) => {
+            console.log("error", err);
+            statusDiv.innerText = "🔁 ફરી બોલો, સ્પષ્ટ બોલો! માઇક બટન દબાવો.";
+            bubbleDiv.innerText = "🥺 સાંભળી શક્યો નહીં, ફરી પ્રયત્ન કરો!";
+            setEmotion('happy');
+            micBtn.classList.remove('pulse-effect');
+            isListening = false;
+        };
+        
+        recognition.onend = () => {
+            if (isListening) {
+                isListening = false;
+                micBtn.classList.remove('pulse-effect');
+                if (!currentUtterance || !window.speechSynthesis.speaking) {
+                    setEmotion('happy');
+                    statusDiv.innerText = "🎙️ બોલવા માટે ફરી દબાવો! 🎙️";
+                }
             }
         };
         
-        r.onerror = () => {
-            document.getElementById('mBtn').classList.remove('pulse');
-            setMood('silent');
-            txt.innerText = "ફરીથી બોલો...";
-        };
-        
-        r.start();
+        recognition.start();
     }
+    
+    // function to stop any ongoing listening
+    function stopListening() {
+        if (recognition && isListening) {
+            recognition.abort();
+            isListening = false;
+            micBtn.classList.remove('pulse-effect');
+            setEmotion('happy');
+        }
+    }
+    
+    // On mic click - robust handling
+    function onMicClick(e) {
+        e.stopPropagation();
+        // if currently speaking, cancel tts but let the recognition start fresh
+        if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+        }
+        stopListening();    // stop any previous recognition
+        startListening();   // fresh session
+    }
+    
+    // welcome animation & initial greeting with kid-friendly style
+    function initialGreeting() {
+        setEmotion('happy');
+        bubbleDiv.innerText = "🧸 નમસ્તે બાળમિત્ર! હું વિદુષી, તમારી સાથે રમવા-વાત કરવા આવી છું! 🎉";
+        statusDiv.innerText = "માઇક બટન દબાવો અને મારી સાથે વાત કરો! 😍";
+        speakVidushi("નમસ્તે મારા દોસ્ત! મારું નામ વિદુષી છે. હું તમારી સાથે વાત કરવા માટે ખુશ છું. તમે કેમ છો? ગોળ બટન દબાવીને મને કહો!", 'happy');
+        // little animation for eyes
+        setInterval(() => {
+            if (!isListening && !window.speechSynthesis.speaking && vidushiFace.classList.contains('happy')) {
+                // occasional playful blink
+                leftEye.style.transform = "scaleY(0.1)";
+                rightEye.style.transform = "scaleY(0.1)";
+                setTimeout(() => {
+                    leftEye.style.transform = "";
+                    rightEye.style.transform = "";
+                }, 120);
+            }
+        }, 4000);
+    }
+    
+    // attach mic event
+    micBtn.addEventListener('click', onMicClick);
+    // disable accidental body click that would conflict
+    document.body.addEventListener('click', (e) => {
+        if(e.target === micBtn || micBtn.contains(e.target)) return;
+        // playful feedback: if not interacting, just wiggle bubble
+        if (!window.speechSynthesis.speaking && !isListening) {
+            bubbleDiv.style.transform = "scale(1.02)";
+            setTimeout(() => bubbleDiv.style.transform = "", 200);
+        }
+    });
+    
+    // start with full charm
+    initialGreeting();
+    
+    // make sure synthetic voices are loaded & polite cancel if needed
+    window.addEventListener('beforeunload', () => {
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        if (recognition) recognition.abort();
+    });
+    
+    // extra kid-friendly safety: avoid repeated recognition overlaps
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('touchstart', (e) => {
+            if(btn === micBtn) e.preventDefault();
+        });
+    });
 </script>
-
 </body>
 </html>
